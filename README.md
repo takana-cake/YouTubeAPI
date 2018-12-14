@@ -7,9 +7,6 @@ https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/
 googleapis/google-api-python-client: ?? The official Python client library for Google's discovery based APIs.</br>
 https://github.com/googleapis/google-api-python-client</br>
 
-【Python入門】YouTubeの動画情報を取得しよう | 侍エンジニア塾ブログ | プログラミング入門者向け学習情報サイト</br>
-https://www.sejuku.net/blog/70173</br>
-
 YouTube Data API (v3)のサンプルコードを解釈する。 - Qiita</br>
 https://qiita.com/somarihair/items/78df9383400e321233ce</br>
 
