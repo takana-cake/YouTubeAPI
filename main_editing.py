@@ -20,13 +20,15 @@ def _apibuild(DEVELOPER_KEY):
 	return BUILD_API
 
 
+
 def _log(err_subject, err_description):
 	print(str(datetime.datetime.now()) + " : " + str(err_subject) + " : " + str(err_description))
 	with open(LOGFILE,'a') as f:
 		f.write(str(datetime.datetime.now()) + " : " + str(err_subject) + " : " + str(err_description) + "\n")
 
-def _get_user_object(BUILD_API, USER):
-	CHANNEL_ID = USER["channel_id"]
+
+
+def _get_user_object(BUILD_API, USERNAME, CHANNEL_ID):
 	parameter = "id,snippet,statistics,contentDetails,topicDetails"
 	errcount = 0
 	try:
@@ -35,14 +37,14 @@ def _get_user_object(BUILD_API, USER):
 	except Exception as err_description:
 		if errcount < 2:
 			errcount = errcount + 1
-			err_subject = USER["user_name"] + " : _get_user_object"
+			err_subject = USERNAME + " : _get_user_object"
 			_log(err_subject, err_description)
 			sleep(60)
 			_get_user_object()
 
-def _youtube_follow_counter_cap(USER, USER_OBJECT):
-	USER_NAME = USER["user_name"]
-	CHANNEL_ID = USER["channel_id"]
+
+
+def _youtube_follow_counter_cap(USERNAME, CHANNEL_ID, USER_OBJECT):
 	counter = USER_OBJECT["items"][0]["statistics"]["subscriberCount"]
 	def _get_cap():
 		url_user = "https://www.youtube.com/channel/" + CHANNEL_ID
