@@ -7,10 +7,22 @@ import re
 import urllib.request
 import subprocess
 import datetime
+import json
 
 
 DATE = datetime.datetime.today().strftime("%Y%m%d_%H%M_%S")
 LOGFILE = "./" + DATE + "_log.txt"
+
+
+def get_authenticated_service(DEVELOPER_KEY):
+	flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE,
+		scope=YOUTUBE_READ_WRITE_SCOPE,
+		message=MISSING_CLIENT_SECRETS_MESSAGE)
+	credentials = storage.get()
+	if credentials is None or credentials.invalid:
+		credentials = run_flow(flow, storage, args)
+	return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+		http=credentials.authorize(httplib2.Http()))
 
 
 def _apibuild(DEVELOPER_KEY):
@@ -44,6 +56,24 @@ def _get_user_object(BUILD_API, USERNAME, CHANNEL_ID):
 
 
 
+def _channel_split(URL):
+	if "channel" in URL:
+		CHANNEL_ID = x.rsplit("/channel/")[1]
+		CHANNEL_ID = CHANNEL_ID.split("?")[0]
+	return CHANNEL_ID
+
+
+
+def _add_subscription(BUILD_API, CHANNEL_ID):
+	try:
+		add_subscription_response = BUILD_API.subscriptions().insert(part='snippet',body=dict(snippet=dict(resourceId=dict(channelId=CHANNEL_ID)))).execute()
+	except Exception as err_description:
+		err_subject = CHANNEL_ID + " : _add_subscription"
+		_log(err_subject, err_description)
+		sleep(60)
+
+
+
 def _youtube_follow_counter_cap(USERNAME, CHANNEL_ID, USER_OBJECT):
 	counter = USER_OBJECT["items"][0]["statistics"]["subscriberCount"]
 	def _get_cap():
@@ -60,15 +90,30 @@ def _youtube_follow_counter_cap(USERNAME, CHANNEL_ID, USER_OBJECT):
 
 
 
+def _parser():
+	parser = argparse.ArgumentParser(
+		usage=' python3 main.py [json-file]\n\\n\
+	nohup python3 main.py [json-file] &',
+		add_help=True,
+		formatter_class=argparse.RawTextHelpFormatter
+		)
+	parser.add_argument("json_file", help="please set DBfile.json.", type=str, nargs=1, metavar="[json-file]")
+	return parser.parse_args()
+
+
+
 if __name__ == '__main__':
-	USERS = [
-		{'user_name': '', 'channel_id': '', 'nickname': ''}, 
-	]
-	file_path_cap = ""
+	cmd_args = _parser()
+	DB_file = os.path.dirname(cmd_args.json_file[0]) + "/" + os.path.basename(cmd_args.json_file[0])
+	date = datetime.datetime.today().strftime("%Y%m%d_%H%M_%S")
+	LOGFILE = os.path.dirname(cmd_args.json_file[0]) + "/" + date + "_log.txt"
+	f = open(DB_file,'r')
+	json_dict = json.load(f)
+	f.close()
 	DEVELOPER_KEY = ""
-	BUILD_API = _apibuild(DEVELOPER_KEY)
-	for i, USER in enumerate(USERS):
-		USER_NAME = USER["user_name"]
-		CHANNEL_ID = USER["channel_id"]
-		USER_OBJECT = _get_user_object(BUILD_API, USER)
-		_youtube_follow_counter_cap(USER, USER_OBJECT)
+	api = _apibuild(DEVELOPER_KEY)
+	for i, USER in enumerate(json_dict):
+		if "url" in USER:
+			for u in USER["url"]
+			CHANNEL_ID = _channel_split(u)
+			_add_subscription(api, CHANNEL_ID)
