@@ -1,5 +1,8 @@
 # YouTube-Script
 
+https://developers.google.com/youtube/v3/code_samples/python?hl=ja#add_a_channel_subscription
+https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
+
 <pre>
 print("---------------")
 print(deve_b.channels().list(part=parameter,id=CHANNEL_ID).execute()["items"][0]["snippet"]["title"])
