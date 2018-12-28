@@ -7,6 +7,33 @@ print("チャンネル登録者数:" + deve_b.channels().list(part=parameter,id=
 print("投稿数:" + deve_b.channels().list(part=parameter,id=CHANNEL_ID).execute()["items"][0]["statistics"]["videoCount"])
 </pre>
 
+<pre>
+json = [
+	{
+		"name":"dummy",
+		"TLflag":False,
+		"Query":{},
+		"Profileflag":False,
+		"hashtagflag":False,
+		"RTflag":False,
+		"videoflag":False,
+		"gifflag":False
+	},
+	{
+		"name":&lt;screen or 検索名&gt;,					#作業フォルダ名
+		"Query":{&lt;tag1&gt;:{"id":&lt;id&gt;, "date":&lt;lastdate&gt;}, ...},		#searchで使用
+		"Profileflag":&lt;False or True&gt;,					#プロフ監視するか
+		"hashtagflag":&lt;False or True&gt;,					#ハッシュタグ収集するか(Queryへ格納)
+		"TLflag":{"id":&lt;id&gt;, "date":&lt;lastdate&gt;},			#TL保存するか
+		"RTflag":&lt;False or True&gt;,					#TL保存の時にRTを含めるか
+		"videoflag":&lt;False or True&gt;,					#動画を保存するか
+		"gifflag":&lt;False or True&gt;					#gifを保存するか
+		"url":[&lt;url, url, ...&gt]						#URLリスト(とりあえず集めるだけ)
+	},
+	...
+]
+</pre>
+
 YouTube Data API</br>
 https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/index.html</br>
 googleapis/google-api-python-client: ?? The official Python client library for Google's discovery based APIs.</br>
