@@ -28,11 +28,10 @@ from oauth2client import tools
 
 ### Youtube section ###
 
-def _get_authenticated_service():
+def _get_authenticated_service(JSON_FILE):
 	flow = flow_from_clientsecrets(CLIENT_SECRET_FILE, scope=SCOPE)
 
-	credential_path = "/home/admin/script/youtube/youtube_quickstart.json"
-	storage = Storage(credential_path)
+	storage = Storage(JSON_FILE)
 	credentials = storage.get()
 	flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 	sleep(30)
@@ -519,14 +518,21 @@ def _add_new_object():
 			if os.path.exists(download_directory + tmp_user) == False:
 				os.makedirs(download_directory + tmp_user)
 			json_dict.append({
-				"name":tmp_user,
-				"Query":{},
-				"Profileflag":cmd_args.profile,
-				"hashtagflag":cmd_args.hashtag,
-				"TLflag":add_tl,
-				"RTflag":cmd_args.rt,
-				"videoflag":cmd_args.video,
-				"gifflag":cmd_args.gif
+				"name":"",
+				"belong":"",
+				"twitter":{
+					"screen":tmp_user,
+					"follower":"",
+					"Profileflag":cmd_args.profile,
+					"hashtagflag":cmd_args.hashtag,
+					"Query":{},
+					"TLflag":add_tl,
+					"RTflag":cmd_args.rt,
+					"videoflag":cmd_args.video,
+					"gifflag":cmd_args.gif
+					"urls":[]
+				},
+				"youtube":[]
 			})
 
 
@@ -677,7 +683,7 @@ if __name__ == '__main__':
 			sys.exit()
 	
 	twiapi = tweepy_api()
-	youapi = _get_authenticated_service()
+	youapi = _get_authenticated_service(working_directory + "youtube_quickstart.json")
 	
 	CLIENT_SECRET_FILE = working_directory + "youtube_client_secrets.json"
 	SCOPE = "https://www.googleapis.com/auth/youtube"
