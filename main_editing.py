@@ -48,11 +48,11 @@ def _get_authenticated_service(JSON_FILE):
 	credentials = storage.get()
 	flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 	sleep(30)
-
 	if not credentials or credentials.invalid:
 		flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPE)
 		flow.user_agent = APPLICATION_NAME
-		credentials = run_flow(flow, storage, flags)
+		if flags:
+			credentials = run_flow(flow, storage, flags)
 	sleep(30)
 	return build(API_SERVICE, API_VERSION,
 		http=credentials.authorize(httplib2.Http()))
@@ -676,6 +676,12 @@ if __name__ == '__main__':
 	DATE = datetime.datetime.today().strftime("%Y%m%d_%H%M_%S")
 	LOGFILE = working_directory + DATE + "_log.txt"
 	
+	CLIENT_SECRET_FILE = working_directory + "youtube_client_secrets.json"
+	SCOPE = "https://www.googleapis.com/auth/youtube"
+	API_SERVICE = "youtube"
+	APPLICATION_NAME = "youbotpro"
+	API_VERSION = "v3"
+	
 	if not os.path.exists(DB_file):
 		init_start()
 	
@@ -692,14 +698,13 @@ if __name__ == '__main__':
 			sys.exit()
 	
 	twiapi = tweepy_api()
+	try:
+		flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+		sleep(30)
+	except ImportError:
+		flags = None
 	youapi = _get_authenticated_service(working_directory + "youtube_quickstart.json")
-	
-	CLIENT_SECRET_FILE = working_directory + "youtube_client_secrets.json"
-	SCOPE = "https://www.googleapis.com/auth/youtube"
-	API_SERVICE = "youtube"
-	APPLICATION_NAME = "youbotpro"
-	API_VERSION = "v3"
-	
+
 	if cmd_args.addf or cmd_args.addo or cmd_args.addq is not None or cmd_args.show:
 		if cmd_args.tl == False:
 			add_tl = False
