@@ -181,9 +181,9 @@ def _TL_hashtag_check(TWEET_OBJECT):
 				hashtag_list.append(z["text"])
 	return hashtag_list
 
-def _hashtag_split(hashtag_tmp):
+def _twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT):
 	hashtags = []
-	hashtag_tmp = re.sub(r'#', " #", hashtag_tmp)
+	hashtag_tmp = re.sub(r'#', " #", USER_OBJECT.description)
 	emoji_pattern = re.compile("["
 		u"\U0001F600-\U0001F64F"
 		u"\U0001F300-\U0001F5FF"
@@ -199,17 +199,12 @@ def _hashtag_split(hashtag_tmp):
 		hashtags[x] = re.sub(r'#', "", hashtags[x])
 	return hashtags
 
-def _twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT):
-	hashtags = []
-	hashtag_tmp = USER_OBJECT.description
-	hashtags = _hashtag_split(hashtag_tmp)
-	return hashtags
-
 
 
 ### TL chech ###
 
 def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, video_enable):
+	HASHTAG_LIST = []
 	def _get_tweetid(SCREEN_NAME):
 		nonlocal TL_search_fault_count
 		try:
@@ -229,17 +224,18 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 				_get_tweetid(SCREEN_NAME)
 	def _TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag):
 		nonlocal TL_tweet_get_fault_count
+		nonlocal HASHTAG_LIST
 		try:
 			if search_flag == 'max_search':
 				for tl_object in twiapi.user_timeline(SCREEN_NAME, count=100, max_id=TWEET_ID):
 					_download_check(FILEPATH, tl_object, retweet_enable, gif_enable, video_enable)
-					#_TL_hashtag_check(tl_object)
+					HASHTAG_LIST.extend(_TL_hashtag_check(tl_object))
 					TWEET_ID = tl_object.id
 					TL_tweet_get_fault_count = 0
 			elif search_flag == 'since_search':
 				for tl_object in twiapi.user_timeline(SCREEN_NAME, count=100, since_id=TWEET_ID):
 					_download_check(FILEPATH, tl_object, retweet_enable, gif_enable, video_enable)
-					#_TL_hashtag_check(tl_object)
+					HASHTAG_LIST.extend(_TL_hashtag_check(tl_object))
 					TWEET_ID = tl_object.id
 					TL_tweet_get_fault_count = 0
 		except tweepy.RateLimitError as err_description:
@@ -265,7 +261,7 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 		while while_count < 50:
 			while_count += 1
 			_TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag)
-	return TWEET_ID
+	return TWEET_ID HASHTAG_LIST
 
 
 
@@ -770,9 +766,11 @@ if __name__ == '__main__':
 		
 		# TL Search
 		if USER_JSON["twitter"]["TLflag"] != False:
-			SEARCH_ID = USER_JSON["twitter"]["TLflag"]["id"]
-			_TL_search(SCREEN_NAME, SEARCH_ID, FILEPATH, RT_FLAG, GIF_FLAG, VIDEO_FLAG)
-		
+			TWEET_ID = USER_JSON["twitter"]["TLflag"]["id"]
+			TWEET_ID,HASHTAG_LIST = _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, RT_FLAG, GIF_FLAG, VIDEO_FLAG)
+			json_dict[index]["twitter"]["TLflag"]["id"] = TWEET_ID
+			HASHTAG_CSV.extend(HASHTAG_LIST)
+
 		# Query Search
 		if not USER_JSON['Query'] == {}:
 			for QUERY,search_date in user_object['Query'].items():
