@@ -755,13 +755,10 @@ if __name__ == '__main__':
 		# Profile
 		if USER_JSON["twitter"]["Profileflag"] == True:
 			_profile(SCREEN_NAME, USER_OBJECT)
-		#if USER_JSON["twitter"]["hashtagflag"] == True:
-		#HASHTAG_LIST = _twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT)
-		#for tag in tags:
-		#	json_dict[index]["twitter"]["Query"][tag] = ""
 		HASHTAG_CSV.extend(_twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT))
 		urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
 		json_dict[index]["twitter"]["urls"].append(urls)
+		
 		for u in USER_JSON["twitter"]["urls"]:
 			channel,subscript = _apicool(u)
 			json_dict[index]["youtube"].append({"channel":channel, subscript":subscript})
