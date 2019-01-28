@@ -1,5 +1,8 @@
 # YouTube-Script
 
+twitterの部分は全引用</br>
+https://github.com/takana303/Tweepy-script</br>
+
 https://developers.google.com/youtube/v3/code_samples/python?hl=ja#add_a_channel_subscription
 https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 
