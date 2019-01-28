@@ -11,30 +11,25 @@ print("投稿数:" + deve_b.channels().list(part=parameter,id=CHANNEL_ID).execut
 </pre>
 
 <pre>
-json = [
-	{
-		"name":"dummy",
-		"TLflag":False,
+json_dict{
+	"name":"名前",
+	"belong":"所属",
+	"twitter":{
+		"screen":SCREEN_NAME,
+		"follower":"",
+		"Profileflag":,
+		"hashtagflag":,
 		"Query":{},
-		"Profileflag":False,
-		"hashtagflag":False,
-		"RTflag":False,
-		"videoflag":False,
-		"gifflag":False
+		"TLflag":,
+		"RTflag":,
+		"videoflag":,
+		"gifflag":,
+		"urls":[]
 	},
-	{
-		"name":&lt;screen or 検索名&gt;,					#作業フォルダ名
-		"Query":{&lt;tag1&gt;:{"id":&lt;id&gt;, "date":&lt;lastdate&gt;}, ...},		#searchで使用
-		"Profileflag":&lt;False or True&gt;,					#プロフ監視するか
-		"hashtagflag":&lt;False or True&gt;,					#ハッシュタグ収集するか(Queryへ格納)
-		"TLflag":{"id":&lt;id&gt;, "date":&lt;lastdate&gt;},			#TL保存するか
-		"RTflag":&lt;False or True&gt;,					#TL保存の時にRTを含めるか
-		"videoflag":&lt;False or True&gt;,					#動画を保存するか
-		"gifflag":&lt;False or True&gt;					#gifを保存するか
-		"url":[&lt;url, url, ...&gt]						#URLリスト(とりあえず集めるだけ)
-	},
-	...
-]
+	"youtube":[
+		{"channel":channel, subscript":subscript}
+	]
+}
 </pre>
 
 YouTube Data API</br>
