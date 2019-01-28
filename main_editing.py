@@ -750,14 +750,16 @@ if __name__ == '__main__':
 		GIF_FLAG = USER_JSON["twitter"]["gifflag"]
 		VIDEO_FLAG = USER_JSON["twitter"]["videoflag"]
 		FOLLOWER = USER_OBJECT.followers_count
+		HASHTAG_CSV = []
 		
 		# Profile
 		if USER_JSON["twitter"]["Profileflag"] == True:
 			_profile(SCREEN_NAME, USER_OBJECT)
-		if USER_JSON["twitter"]["hashtagflag"] == True:
-			tags = _twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT)
-			for tag in tags:
-				json_dict[index]["twitter"]["Query"][tag] = ""
+		#if USER_JSON["twitter"]["hashtagflag"] == True:
+		#HASHTAG_LIST = _twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT)
+		#for tag in tags:
+		#	json_dict[index]["twitter"]["Query"][tag] = ""
+		HASHTAG_CSV.extend(_twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT))
 		urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
 		json_dict[index]["twitter"]["urls"].append(urls)
 		for u in USER_JSON["twitter"]["urls"]:
@@ -770,6 +772,11 @@ if __name__ == '__main__':
 			TWEET_ID,HASHTAG_LIST = _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, RT_FLAG, GIF_FLAG, VIDEO_FLAG)
 			json_dict[index]["twitter"]["TLflag"]["id"] = TWEET_ID
 			HASHTAG_CSV.extend(HASHTAG_LIST)
+		
+		# tags
+		with open(FILEPATH + DATE + "_tags.csv", "w") as f:
+			w = csv.writer(f, lineterminator='\n')
+			
 
 		# Query Search
 		if not USER_JSON['Query'] == {}:
