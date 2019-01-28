@@ -776,6 +776,7 @@ if __name__ == '__main__':
 		# tags
 		with open(FILEPATH + DATE + "_tags.csv", "w") as f:
 			w = csv.writer(f, lineterminator='\n')
+			w.writerow(HASHTAG_CSV)
 			
 
 		# Query Search
