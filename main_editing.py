@@ -525,7 +525,7 @@ def _add_new_object():
 					"TLflag":add_tl,
 					"RTflag":cmd_args.rt,
 					"videoflag":cmd_args.video,
-					"gifflag":cmd_args.gif
+					"gifflag":cmd_args.gif,
 					"urls":[]
 				},
 				"youtube":[]
