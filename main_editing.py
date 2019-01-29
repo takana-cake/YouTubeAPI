@@ -100,12 +100,12 @@ def _apicool(URL):
 def tweepy_api():
 	twitter_conf = {
 		'consumer' : {
-			'key'   : "",
-			'secret' : ""
+			'key'   : "<FILLIN>",
+			'secret' : "<FILLIN>"
 		},
 		'access'   : {
-			'key'   : "",
-			'secret' : ""
+			'key'   : "<FILLIN>",
+			'secret' : "<FILLIN>"
 		}
 	}
 	auth = tweepy.OAuthHandler(
