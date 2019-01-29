@@ -15,7 +15,7 @@ json_dict{
 	"belong":"所属",
 	"twitter":{
 		"screen":SCREEN_NAME,
-		"follower":"",
+		"follower":USER_OBJECT.followers_count,
 		"Profileflag":,
 		"hashtagflag":,
 		"Query":{},
