@@ -27,7 +27,7 @@ json_dict{
 		"channel":channel, 
 		"subscript":subscript,
 		"videos":{
-			title:viewCount,
+			videoId:{"title":title, "view":viewCount, "day":ひづけ},
 			...
 		}
 	}
