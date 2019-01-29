@@ -3,11 +3,9 @@
 twitterの部分は全引用</br>
 https://github.com/takana303/Tweepy-script</br>
 
-https://developers.google.com/youtube/v3/code_samples/python?hl=ja#add_a_channel_subscription
-https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 
 
-*** jsonの内容
+## jsonの内容
 
 <pre>
 json_dict{
@@ -37,12 +35,19 @@ json_dict{
 </pre>
 
 
-***参考サイト
+## 参考サイト
 
 YouTube Data API</br>
 https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/index.html</br>
+
 googleapis/google-api-python-client: ?? The official Python client library for Google's discovery based APIs.</br>
 https://github.com/googleapis/google-api-python-client</br>
+
+Python コード サンプル  |  YouTube Data API (v3)  |  Google Developers</br>
+https://developers.google.com/youtube/v3/code_samples/python?hl=ja#add_a_channel_subscription</br>
+
+Client Secrets  |  API Client Library for Python  |  Google Developers</br>
+https://developers.google.com/api-client-library/python/guide/aaa_client_secrets</br>
 
 YouTube Data API (v3)のサンプルコードを解釈する。 - Qiita</br>
 https://qiita.com/somarihair/items/78df9383400e321233ce</br>
@@ -68,5 +73,5 @@ https://www.superharinezumi.com/entry/youtube-data-api-v3</br>
 YouTube Data API v3を試してみました｜YouTubeAPI｜音声・動画配信（ストリーミング）｜PHP & JavaScript Room</br>
 http://phpjavascriptroom.com/?t=strm&p=youtubedataapi_v3_list</br>
 
-Youtube API V3でユーザーがアップロードした動画リストを取得する方法 [無料ホームページ作成クラウドサービス　まめわざ]</br>
+Youtube API V3でユーザーがアップロードした動画リストを取得する方法</br>
 https://mamewaza.com/support/blog/get-youtube-videoid-list.html</br>
