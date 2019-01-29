@@ -83,7 +83,7 @@ def _channel_split(URL):
 		CHANNEL_ID = None
 	return CHANNEL_ID
 
-def _apicool(URL):
+def _youtube_init(URL):
 	try:
 		CHANNEL_ID = _channel_split(URL)
 		if CHANNEL_ID is not None:
@@ -93,6 +93,24 @@ def _apicool(URL):
 		_log(err_subject, e)
 		sleep(180)
 		_apicool(URL)
+
+def _youtube_info(CHANNEL_ID):
+	token = ""
+	subscript = deve_b.channels().list(part="statistics",id=CHANNEL_ID).execute()["items"][0]["statistics"]["subscriberCount"]
+	for l in range(100):
+		try:
+			video_ids = deve_b.search().list(part="id", channelId=CHANNEL_ID, maxResults="50", order="date", pageToken=token).execute()
+			sleep(10)
+			for i in video_ids["items"]:
+				if "videoId" in i["id"]:
+					video_info = deve_b.videos().list(part="id,snippet,statistics", id=i["id"]["videoId"]).execute()["items"][0]
+					sleep(3)
+					videos.append({"id":i["id"]["videoId"], "title":video_info["snippet"]["title"], "view":video_info["statistics"]["viewCount"], "day":""})
+			token = video_ids["nextPageToken"]
+		except Exception as e:
+			print(e)
+			break
+	return subscript,videos
 
 
 
@@ -542,7 +560,7 @@ def _add_new_object():
 					"gifflag":cmd_args.gif,
 					"urls":[]
 				},
-				"youtube":[]
+				"youtube":{}
 			})
 
 
@@ -717,6 +735,11 @@ if __name__ == '__main__':
 			for tmp_id in my_friends_ids:
 				USER_OBJECT = _twitter_userobject_get(tmp_id)
 				SCREEN_NAME = USER_OBJECT.screen_name
+				urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
+				for u in urls:
+					channel = _youtube_init(u)
+				for id in CHANNEL_ID:
+					subscript,videos = _youtube_videoinfo(u)
 				if not SCREEN_NAME in json_dict:
 					if os.path.exists(working_directory + SCREEN_NAME) == False:
 						os.makedirs(working_directory + SCREEN_NAME)
@@ -726,7 +749,7 @@ if __name__ == '__main__':
 						"belong":"",
 						"twitter":{
 							"screen":SCREEN_NAME,
-							"follower":"",
+							"follower":USER_OBJECT.followers_count,
 							"Profileflag":cmd_args.profile,
 							"hashtagflag":cmd_args.hashtag,
 							"Query":{},
@@ -734,9 +757,13 @@ if __name__ == '__main__':
 							"RTflag":cmd_args.rt,
 							"videoflag":cmd_args.video,
 							"gifflag":cmd_args.gif
-							"urls":[]
+							"urls":urls
 						},
-						"youtube":[]
+						"youtube":{
+							"channel":channel, 
+							"subscript":subscript,
+							"videos":videos
+						}
 					})
 		if cmd_args.addo:
 			if not cmd_args.name:
@@ -778,9 +805,9 @@ if __name__ == '__main__':
 		urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
 		json_dict[index]["twitter"]["urls"].append(urls)
 		
-		for u in USER_JSON["twitter"]["urls"]:
-			channel,subscript = _apicool(u)
-			json_dict[index]["youtube"].append({"channel":channel, "subscript":subscript, "videos":{}})
+		#for u in USER_JSON["twitter"]["urls"]:
+		#	channel,subscript = _youtube_api(u)
+		#	json_dict[index]["youtube"].append({"channel":channel, "subscript":subscript, "videos":{}})
 		
 		# TL Search
 		if USER_JSON["twitter"]["TLflag"] != False:
