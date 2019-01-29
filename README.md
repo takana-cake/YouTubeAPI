@@ -8,7 +8,7 @@ https://github.com/takana303/Tweepy-script</br>
 ## jsonの内容
 
 <pre>
-json_dict[
+json_dict = [
 	{
 		"name":"名前",
 		"belong":"所属",
