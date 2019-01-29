@@ -6,12 +6,8 @@ https://github.com/takana303/Tweepy-script</br>
 https://developers.google.com/youtube/v3/code_samples/python?hl=ja#add_a_channel_subscription
 https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 
-<pre>
-print("---------------")
-print(deve_b.channels().list(part=parameter,id=CHANNEL_ID).execute()["items"][0]["snippet"]["title"])
-print("チャンネル登録者数:" + deve_b.channels().list(part=parameter,id=CHANNEL_ID).execute()["items"][0]["statistics"]["subscriberCount"])
-print("投稿数:" + deve_b.channels().list(part=parameter,id=CHANNEL_ID).execute()["items"][0]["statistics"]["videoCount"])
-</pre>
+
+*** jsonの内容
 
 <pre>
 json_dict{
@@ -29,11 +25,19 @@ json_dict{
 		"gifflag":,
 		"urls":[]
 	},
-	"youtube":[
-		{"channel":channel, subscript":subscript}
-	]
+	"youtube":{
+		"channel":channel, 
+		"subscript":subscript,
+		"videos":{
+			title:viewCount,
+			...
+		}
+	}
 }
 </pre>
+
+
+***参考サイト
 
 YouTube Data API</br>
 https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/index.html</br>
