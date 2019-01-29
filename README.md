@@ -1,6 +1,6 @@
 # YouTube-Script
 
-twitterの部分は全引用</br>
+youtube apiにかかわること以外のReadmeは以下を参照</br>
 https://github.com/takana303/Tweepy-script</br>
 
 
