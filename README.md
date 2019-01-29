@@ -27,10 +27,10 @@ json_dict = [
 		"youtube":{
 			"channel":channel, 
 			"subscript":subscript,
-			"videos":{
-				videoId:{"title":title, "view":viewCount, "day":ひづけ},
+			"videos":[
+				{"id":videoId, "title":title, "view":viewCount, "day":ひづけ},
 				...
-			}
+			]
 		}
 	},
 	...
