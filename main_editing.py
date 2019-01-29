@@ -524,8 +524,9 @@ def _download_check(FILEPATH, dl_object, retweet_enable, gif_enable, video_enabl
 def _add_new_object():
 	for tmp_user in cmd_args.name:
 		if not tmp_user in json_dict:
-			if os.path.exists(download_directory + tmp_user) == False:
-				os.makedirs(download_directory + tmp_user)
+			if os.path.exists(working_directory + tmp_user) == False:
+				os.makedirs(working_directory + tmp_user)
+				os.makedirs(working_directory + tmp_user + "/download/")
 			json_dict.append({
 				"name":"",
 				"belong":"",
@@ -593,9 +594,9 @@ def _show():
 ### init ###
 
 def init_start():
-	if os.path.exists(download_directory) == False:
-		print("directory is not found.")
-		sys.exit()
+	#if os.path.exists(download_directory) == False:
+	#	print("directory is not found.")
+	#	sys.exit()
 	if os.path.exists(DB_file) == False:
 		print("json-file is not found.")
 		q = input("Do you want to create a file?(y/n)")
@@ -669,9 +670,9 @@ if __name__ == '__main__':
 		working_directory = os.path.dirname(cmd_args.json_file[0]) + "/"
 	else:
 		working_directory = os.getcwd() +"/"
-	if not os.path.exists(working_directory + "download"):
-		os.makedirs(working_directory + "download")
-	download_directory = working_directory + "download/"
+	#if not os.path.exists(working_directory + "download"):
+	#	os.makedirs(working_directory + "download")
+	#download_directory = working_directory + "download/"
 	DB_file = working_directory + os.path.basename(cmd_args.json_file[0])
 	DATE = datetime.datetime.today().strftime("%Y%m%d_%H%M_%S")
 	LOGFILE = working_directory + DATE + "_log.txt"
@@ -712,31 +713,31 @@ if __name__ == '__main__':
 			if not cmd_args.name or len(cmd_args.name) != 1:
 				print("invalid argument '--name'")
 				sys.exit()
-			else:
-				my_friends_ids = _follow_userid_get(cmd_args.name[0])
-				for tmp_id in my_friends_ids:
-					USER_OBJECT = _twitter_userobject_get(tmp_id)
-					SCREEN_NAME = USER_OBJECT.screen_name
-					if not SCREEN_NAME in json_dict:
-						if os.path.exists(download_directory + SCREEN_NAME) == False:
-							os.makedirs(download_directory + SCREEN_NAME)
-						json_dict.append({
-							"name":"",
-							"belong":"",
-							"twitter":{
-								"screen":SCREEN_NAME,
-								"follower":"",
-								"Profileflag":cmd_args.profile,
-								"hashtagflag":cmd_args.hashtag,
-								"Query":{},
-								"TLflag":add_tl,
-								"RTflag":cmd_args.rt,
-								"videoflag":cmd_args.video,
-								"gifflag":cmd_args.gif
-								"urls":[]
-							},
-							"youtube":[]
-						})
+			my_friends_ids = _follow_userid_get(cmd_args.name[0])
+			for tmp_id in my_friends_ids:
+				USER_OBJECT = _twitter_userobject_get(tmp_id)
+				SCREEN_NAME = USER_OBJECT.screen_name
+				if not SCREEN_NAME in json_dict:
+					if os.path.exists(working_directory + SCREEN_NAME) == False:
+						os.makedirs(working_directory + SCREEN_NAME)
+						os.makedirs(working_directory + SCREEN_NAME + "/download/")
+					json_dict.append({
+						"name":"",
+						"belong":"",
+						"twitter":{
+							"screen":SCREEN_NAME,
+							"follower":"",
+							"Profileflag":cmd_args.profile,
+							"hashtagflag":cmd_args.hashtag,
+							"Query":{},
+							"TLflag":add_tl,
+							"RTflag":cmd_args.rt,
+							"videoflag":cmd_args.video,
+							"gifflag":cmd_args.gif
+							"urls":[]
+						},
+						"youtube":[]
+					})
 		if cmd_args.addo:
 			if not cmd_args.name:
 				print("invalid argument '--name'")
@@ -762,7 +763,7 @@ if __name__ == '__main__':
 
 	for index,USER_JSON in enumerate(json_dict):
 		SCREEN_NAME = USER_JSON["twitter"]["screen"]
-		FILEPATH = download_directory + SCREEN_NAME
+		FILEPATH = working_directory + SCREEN_NAME + "/download/"
 		USER_OBJECT = _twitter_userobject_get(SCREEN_NAME)
 		RT_FLAG = USER_JSON["twitter"]["RTflag"]
 		GIF_FLAG = USER_JSON["twitter"]["gifflag"]
@@ -779,7 +780,7 @@ if __name__ == '__main__':
 		
 		for u in USER_JSON["twitter"]["urls"]:
 			channel,subscript = _apicool(u)
-			json_dict[index]["youtube"].append({"channel":channel, subscript":subscript})
+			json_dict[index]["youtube"].append({"channel":channel, "subscript":subscript, "videos":{}})
 		
 		# TL Search
 		if USER_JSON["twitter"]["TLflag"] != False:
@@ -787,12 +788,6 @@ if __name__ == '__main__':
 			TWEET_ID,HASHTAG_LIST = _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, RT_FLAG, GIF_FLAG, VIDEO_FLAG)
 			json_dict[index]["twitter"]["TLflag"]["id"] = TWEET_ID
 			HASHTAG_CSV.extend(HASHTAG_LIST)
-		
-		# tags
-		with open(FILEPATH + DATE + "_tags.csv", "w") as f:
-			w = csv.writer(f, lineterminator='\n')
-			w.writerow(HASHTAG_CSV)
-			
 
 		# Query Search
 		if not USER_JSON['Query'] == {}:
@@ -800,4 +795,13 @@ if __name__ == '__main__':
 				for l in range(50):
 					search_fault_count = 0
 					_search(FILEPATH, QUERY, GET_DATE, TWEET_ID, GIF_FLAG, VIDEO_FLAG)
+		
+		
+		# tags
+		with open(working_directory + DATE + "_" + SCREEN_NAME + "_tags.csv", "w") as f:
+			w = csv.writer(f, lineterminator='\n')
+			w.writerow(HASHTAG_CSV)
+		
 		_edit_json()
+
+
