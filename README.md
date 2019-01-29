@@ -8,8 +8,8 @@ https://github.com/takana303/Tweepy-script</br>
 ## jsonの内容
 
 <pre>
-json_dict{
-	"name":"名前",
+json_dict[
+	{"name":"名前",
 	"belong":"所属",
 	"twitter":{
 		"screen":SCREEN_NAME,
@@ -30,8 +30,9 @@ json_dict{
 			videoId:{"title":title, "view":viewCount, "day":ひづけ},
 			...
 		}
-	}
-}
+	}},
+	...
+]
 </pre>
 
 
