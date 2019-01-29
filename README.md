@@ -9,28 +9,30 @@ https://github.com/takana303/Tweepy-script</br>
 
 <pre>
 json_dict[
-	{"name":"名前",
-	"belong":"所属",
-	"twitter":{
-		"screen":SCREEN_NAME,
-		"follower":USER_OBJECT.followers_count,
-		"Profileflag":,
-		"hashtagflag":,
-		"Query":{},
-		"TLflag":,
-		"RTflag":,
-		"videoflag":,
-		"gifflag":,
-		"urls":[]
-	},
-	"youtube":{
-		"channel":channel, 
-		"subscript":subscript,
-		"videos":{
-			videoId:{"title":title, "view":viewCount, "day":ひづけ},
-			...
+	{
+		"name":"名前",
+		"belong":"所属",
+		"twitter":{
+			"screen":SCREEN_NAME,
+			"follower":USER_OBJECT.followers_count,
+			"Profileflag":,
+			"hashtagflag":,
+			"Query":{},
+			"TLflag":,
+			"RTflag":,
+			"videoflag":,
+			"gifflag":,
+			"urls":[]
+		},
+		"youtube":{
+			"channel":channel, 
+			"subscript":subscript,
+			"videos":{
+				videoId:{"title":title, "view":viewCount, "day":ひづけ},
+				...
+			}
 		}
-	}},
+	},
 	...
 ]
 </pre>
