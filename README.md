@@ -48,6 +48,9 @@ json_dict = [
 YouTube Data API</br>
 https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/index.html</br>
 
+GoogleCloudPlatform/google-auth-library-python-oauthlib</br>
+https://github.com/GoogleCloudPlatform/google-auth-library-python-oauthlib</br>
+
 googleapis/google-api-python-client: ?? The official Python client library for Google's discovery based APIs.</br>
 https://github.com/googleapis/google-api-python-client</br>
 
