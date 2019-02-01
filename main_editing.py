@@ -96,7 +96,12 @@ def _youtube_init(URL):
 
 def _youtube_info(CHANNEL_ID):
 	token = ""
-	channel_check = youapi.channels().list(part="snippet,statistics",id=CHANNEL_ID).execute()
+	try:
+		channel_check = youapi.channels().list(part="snippet,statistics",id=CHANNEL_ID).execute()
+	except Exception as e:
+		err_subject = CHANNEL_ID
+		_log(err_subject, e)
+		return "","",""
 	subscript = channel_check["items"][0]["statistics"]["subscriberCount"]
 	title = channel_check["items"][0]["snippet"]["title"]
 	for l in range(100):
@@ -110,7 +115,8 @@ def _youtube_info(CHANNEL_ID):
 					videos.append({"id":i["id"]["videoId"], "title":video_info["snippet"]["title"], "view":video_info["statistics"]["viewCount"], "day":""})
 			token = video_ids["nextPageToken"]
 		except Exception as e:
-			print(e)
+			err_subject = CHANNEL_ID
+			_log(err_subject, e)
 			break
 	return subscript,videos,title
 
@@ -169,6 +175,7 @@ def _twitter_userobject_get(SCREEN_NAME):
 ### URL get ###
 
 def _twiprofurl_get(SCREEN_NAME, USER_OBJECT):
+	URLS = []
 	USER_URL = USER_OBJECT.entities
 	USER_DESCRIPTION = USER_OBJECT.description
 	if "url" in USER_URL:
@@ -730,6 +737,8 @@ if __name__ == '__main__':
 	if cmd_args.addf or cmd_args.addo or cmd_args.addq is not None or cmd_args.show:
 		if cmd_args.tl == False:
 			add_tl = False
+		else:
+			add_tl = {"id":"", "date":""}
 		if cmd_args.addf:
 			if not cmd_args.name or len(cmd_args.name) != 1:
 				print("invalid argument '--name'")
