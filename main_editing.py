@@ -282,6 +282,7 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 				sleep(60 * 5)
 				_TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag)
 	if TWEET_ID == "":
+		TL_search_fault_count = 0
 		TWEET_ID = _get_tweetid(SCREEN_NAME)
 		search_flag = 'max_search'
 	else:
@@ -292,7 +293,7 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 		while while_count < 50:
 			while_count += 1
 			_TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag)
-	return TWEET_ID HASHTAG_LIST
+	return TWEET_ID,HASHTAG_LIST
 
 
 
@@ -497,7 +498,7 @@ def _download_media(DL_URL, FILEPATH, FILENAME):
 				_download_file(type, gif_enable)
 			else:
 				errcount = 0
-		if FILENAME[-3:] == 'gif'
+		if FILENAME[-3:] == 'gif':
 			gifenc1 = "ffmpeg -i " + FILEPATH + FILENAME + " -vf fps=20,palettegen=stats_mode=diff -y " + FILEPATH + "palette.png"
 			gifenc2 = "ffmpeg -i " + FILEPATH + FILENAME + " -i palette.png -lavfi fps=20,paletteuse -y " + FILEPATH + os.path.splitext(FILENAME)[0] + ".gif"
 			subprocess.call(gifenc1.split(), shell=False)
