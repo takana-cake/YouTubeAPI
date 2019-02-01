@@ -96,16 +96,16 @@ def _youtube_init(URL):
 
 def _youtube_info(CHANNEL_ID):
 	token = ""
-	channel_check = deve_b.channels().list(part="snippet,statistics",id=CHANNEL_ID).execute()
+	channel_check = youapi.channels().list(part="snippet,statistics",id=CHANNEL_ID).execute()
 	subscript = channel_check["items"][0]["statistics"]["subscriberCount"]
 	title = channel_check["items"][0]["snippet"]["title"]
 	for l in range(100):
 		try:
-			video_ids = deve_b.search().list(part="id", channelId=CHANNEL_ID, maxResults="50", order="date", pageToken=token).execute()
+			video_ids = youapi.search().list(part="id", channelId=CHANNEL_ID, maxResults="50", order="date", pageToken=token).execute()
 			sleep(10)
 			for i in video_ids["items"]:
 				if "videoId" in i["id"]:
-					video_info = deve_b.videos().list(part="id,snippet,statistics", id=i["id"]["videoId"]).execute()["items"][0]
+					video_info = youapi.videos().list(part="id,snippet,statistics", id=i["id"]["videoId"]).execute()["items"][0]
 					sleep(3)
 					videos.append({"id":i["id"]["videoId"], "title":video_info["snippet"]["title"], "view":video_info["statistics"]["viewCount"], "day":""})
 			token = video_ids["nextPageToken"]
