@@ -96,7 +96,9 @@ def _youtube_init(URL):
 
 def _youtube_info(CHANNEL_ID):
 	token = ""
-	subscript = deve_b.channels().list(part="statistics",id=CHANNEL_ID).execute()["items"][0]["statistics"]["subscriberCount"]
+	channel_check = deve_b.channels().list(part="snippet,statistics",id=CHANNEL_ID).execute()
+	subscript = channel_check["items"][0]["statistics"]["subscriberCount"]
+	title = channel_check["items"][0]["snippet"]["title"]
 	for l in range(100):
 		try:
 			video_ids = deve_b.search().list(part="id", channelId=CHANNEL_ID, maxResults="50", order="date", pageToken=token).execute()
@@ -110,7 +112,7 @@ def _youtube_info(CHANNEL_ID):
 		except Exception as e:
 			print(e)
 			break
-	return subscript,videos
+	return subscript,videos,title
 
 
 
@@ -739,8 +741,8 @@ if __name__ == '__main__':
 				urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
 				for u in urls:
 					channel = _youtube_init(u)
-				for id in CHANNEL_ID:
-					subscript,videos = _youtube_videoinfo(u)
+				#for id in CHANNEL_ID:
+				subscript,videos,title = _youtube_videoinfo(u)
 				if not SCREEN_NAME in json_dict:
 					if os.path.exists(working_directory + SCREEN_NAME) == False:
 						os.makedirs(working_directory + SCREEN_NAME)
@@ -761,6 +763,7 @@ if __name__ == '__main__':
 							"urls":urls
 						},
 						"youtube":{
+							"title":title,
 							"channel":channel, 
 							"subscript":subscript,
 							"videos":videos
