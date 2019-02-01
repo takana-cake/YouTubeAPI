@@ -742,7 +742,10 @@ if __name__ == '__main__':
 				for u in urls:
 					channel = _youtube_init(u)
 				#for id in CHANNEL_ID:
-				subscript,videos,title = _youtube_videoinfo(u)
+				if channel:
+					subscript,videos,title = _youtube_info(channel)
+				else:
+					subscript = videos = title = ""
 				if not SCREEN_NAME in json_dict:
 					if os.path.exists(working_directory + SCREEN_NAME) == False:
 						os.makedirs(working_directory + SCREEN_NAME)
