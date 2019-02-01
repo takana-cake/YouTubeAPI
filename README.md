@@ -6,7 +6,7 @@ https://github.com/takana303/Tweepy-script</br>
 
 ## やること
 ユーザのアカウントがフォローしているYoutuberのチャンネルを登録<br>
-ファンアートを収集<br>
+ファンアートを収集(favは未実装)<br>
 
 
 ## jsonの内容
