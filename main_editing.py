@@ -652,9 +652,9 @@ def _log(err_subject, err_description):
 
 def _parser():
 	parser = argparse.ArgumentParser(
-		usage=' python3 main.py [json-file]\n\\n\
+		usage=' python3 main.py [json-file]\n\
 	python3 main.py [json-file] --addf --name user --tl --gif --video\n\
-	python3 main.py [json-file] --addo --name user1 user2 user3 --tl --gif --video\n\\n\
+	python3 main.py [json-file] --addo --name user1 user2 user3 --tl --gif --video\n\
 	nohup python3 main.py [json-file] &',
 		add_help=True,
 		formatter_class=argparse.RawTextHelpFormatter
