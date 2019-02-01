@@ -713,7 +713,7 @@ if __name__ == '__main__':
 		shutil.copyfile(DB_file, DB_file + "_bak")
 		print("get backupfile : " + DB_file + "_bak")
 	except Exception as e:
-		if not os.path.getsize(DB_file):
+		if os.path.getsize(DB_file) != 0:
 			print(e)
 			sys.exit()
 	
