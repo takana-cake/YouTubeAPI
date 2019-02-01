@@ -4,6 +4,10 @@ youtube apiにかかわること以外のReadmeは以下を参照</br>
 https://github.com/takana303/Tweepy-script</br>
 
 
+## やること
+ユーザのアカウントがフォローしているYoutuberのチャンネルを登録<br>
+ファンアートを収集<br>
+
 
 ## jsonの内容
 
