@@ -5,7 +5,7 @@ https://github.com/takana303/Tweepy-script</br>
 
 
 ## やること
-ユーザのアカウントがフォローしているYoutuberのチャンネルを登録<br>
+ユーザのアカウントがフォローしているYoutuberのチャンネルを登録(apiすごく遅い)<br>
 ファンアートを収集(favは未実装)<br>
 
 
