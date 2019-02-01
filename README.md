@@ -29,6 +29,7 @@ json_dict = [
 			"urls":[]
 		},
 		"youtube":{
+			"title":title,
 			"channel":channel, 
 			"subscript":subscript,
 			"videos":[
