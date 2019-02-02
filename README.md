@@ -1,7 +1,7 @@
 # YouTube-Script
 
 ほぼ以下コードの引用</br>
-https://github.com/takana303/Tweepy-script</br>
+https://github.com/takana-cake/Tweepy-script</br>
 
 
 ## やること
