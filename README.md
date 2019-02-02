@@ -28,15 +28,18 @@ json_dict = [
 			"gifflag":,
 			"urls":[]
 		},
-		"youtube":{
-			"title":title,
-			"channel":channel, 
-			"subscript":subscript,
-			"videos":[
-				{"id":videoId, "title":title, "view":viewCount, "day":ひづけ},
-				...
-			]
-		}
+		"youtube":[
+			{
+				"title":title,
+				"channel":channel, 
+				"subscript":subscript,
+				"videos":[
+					{"id":videoId, "title":title, "view":viewCount, "day":ひづけ},
+					...
+				]
+			},
+			...
+		]
 	},
 	...
 ]
