@@ -102,6 +102,7 @@ cwd
 
 ## 参考サイト
 
+### Youtube API
 YouTube Data API</br>
 https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/index.html</br>
 GoogleCloudPlatform/google-auth-library-python-oauthlib</br>
@@ -115,11 +116,13 @@ https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 Developer's Guide: Python ?|? YouTube ?|? Google Developers</br>
 https://developers.google.com/youtube/1.0/developers_guide_python</br>
 
+### API実装の参考にさせて頂きました
 YouTubeAPIを使ってみた - Qiita</br>
 https://qiita.com/tksnino/items/51c6dadfbf1e0214c89e</br>
 YouTube Data API (v3)のサンプルコードを解釈する。 - Qiita</br>
 https://qiita.com/somarihair/items/78df9383400e321233ce</br>
 
+### 実際にAPIを使ってみる
 YouTuberマイニング #1 - Qiita</br>
 https://qiita.com/myaun/items/7425ad451638c6367f20</br>
 youtubeAPIを使って特定のチャンネルの動画タイトルを取得 - Qiita</br>
