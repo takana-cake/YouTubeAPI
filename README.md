@@ -16,6 +16,12 @@ https://github.com/takana303/Tweepy-script</br>
 jsonをブラウザで閲覧<br>
 
 
+## 必要なモジュール
+<pre>
+
+</pre>
+
+
 ## jsonの内容
 
 <pre>
