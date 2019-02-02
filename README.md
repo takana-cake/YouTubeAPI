@@ -23,7 +23,21 @@ jsonをブラウザで閲覧<br>
 </pre>
 
 
-## jsonの内容
+## youtube_client_secrets.jsonの内容
+<pre>
+{"installed":{
+	"client_id":"<FILLIN>",
+	"project_id":"<FILLIN>",
+	"auth_uri":"https://accounts.google.com/o/oauth2/auth",
+	"token_uri":"https://www.googleapis.com/oauth2/v3/token",
+	"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
+	"client_secret":"<FILLIN>",
+	"redirect_uris":["urn:ietf:wg:oauth:2.0:oob","http://localhost"]
+}}
+</pre>
+
+
+## db.jsonの内容
 
 <pre>
 json_dict = [
@@ -65,14 +79,16 @@ json_dict = [
 cwd
 ├ user01
 │ ├ download
-│ │ ├ media
+│ │ ├ MEDIAFILE
 │ │ └ ...
-│ └ yyyymmdd_tag.csv
+│ └ yyyymmdd_user01_tags.csv
 ├ user02
 ├ ...
 ├ main.py
 ├ db.json
-└ yyyymmdd_log
+├ youtube_client_secrets.json
+├ youtube_quickstart.json
+└ yyyymmdd_log.txt
 </pre>
 
 
