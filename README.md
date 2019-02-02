@@ -5,9 +5,11 @@ https://github.com/takana303/Tweepy-script</br>
 
 
 ## やること
-ユーザのアカウントがフォローしているYoutuberのチャンネルを登録(subscriptionすごく遅い)<br>
-ファンアートを収集(favは未実装)<br>
+手入力でユーザを追加 or ユーザのアカウントがフォローしているユーザを追加</br>
+追加したユーザのYoutubeチャンネルを登録(subscriptionすごく遅い)</br>
+TLを収集(favは未実装)</br>
 ハッシュタグをCSVに</br>
+クエリサーチ(Queryの追加が未実装)</br>
 
 
 ## 残タスク
