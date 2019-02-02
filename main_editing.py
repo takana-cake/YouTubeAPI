@@ -17,7 +17,6 @@ import json
 
 import tweepy
 
-
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.tools import run_flow
 from apiclient.discovery import build
@@ -38,7 +37,6 @@ import httplib2
 
 def _get_authenticated_service(JSON_FILE):
 	flow = flow_from_clientsecrets(CLIENT_SECRET_FILE, scope=SCOPE)
-
 	storage = Storage(JSON_FILE)
 	credentials = storage.get()
 
