@@ -1,12 +1,19 @@
 # YouTube-Script
 
-youtube apiにかかわること以外のReadmeは以下を参照</br>
+ほぼ以下コードの引用</br>
 https://github.com/takana303/Tweepy-script</br>
 
 
 ## やること
 ユーザのアカウントがフォローしているYoutuberのチャンネルを登録(subscriptionすごく遅い)<br>
 ファンアートを収集(favは未実装)<br>
+ハッシュタグをCSVに</br>
+
+
+## 残タスク
+オブジェクトの名前と所属を更新<br>
+ハッシュタグをQueryへ追加<br>
+jsonをブラウザで閲覧<br>
 
 
 ## jsonの内容
