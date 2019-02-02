@@ -19,6 +19,12 @@ youtube apiのsecretファイル作成をinitに追加<br>
 jsonをブラウザで閲覧<br>
 
 
+## 必要なパッケージ
+<pre>
+
+</pre>
+
+
 ## 必要なモジュール
 <pre>
 
