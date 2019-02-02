@@ -17,54 +17,49 @@ import json
 
 import tweepy
 
-import httplib2
+
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.tools import run_flow
 from apiclient.discovery import build
 from apiclient.errors import HttpError
-from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
-from oauth2client.tools import argparser, run_flow
-from oauth2client import tools
+import httplib2
+#from oauth2client.tools import argparser, run_flow
+#from oauth2client import tools
+#import google.oauth2.credentials
+#import google_auth_oauthlib.flow
+#from googleapiclient.discovery import build
+#from googleapiclient.errors import HttpError
+#from google_auth_oauthlib.flow import InstalledAppFlow
 
 
 ### Youtube section ###
 
-'''
-JSON_FILE
-{"installed":{
-	"client_id":"<FILLIN>",
-	"project_id":"<FILLIN>",
-	"auth_uri":"https://accounts.google.com/o/oauth2/auth",
-	"token_uri":"https://www.googleapis.com/oauth2/v3/token",
-	"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
-	"client_secret":"<FILLIN>",
-	"redirect_uris":["urn:ietf:wg:oauth:2.0:oob","http://localhost"]
-}}
-'''
 
 def _get_authenticated_service(JSON_FILE):
 	flow = flow_from_clientsecrets(CLIENT_SECRET_FILE, scope=SCOPE)
 
 	storage = Storage(JSON_FILE)
 	credentials = storage.get()
-	flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-	sleep(30)
-	if not credentials or credentials.invalid:
-		flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPE)
-		flow.user_agent = APPLICATION_NAME
-		if flags:
-			credentials = run_flow(flow, storage, flags)
-	sleep(30)
+
+	if credentials is None or credentials.invalid:
+		youtube_parser = argparse.ArgumentParser()
+		youtube_parser.add_argument("--noauth_local_webserver", action='store_true')
+		arg = youtube_parser.parse_args()
+		credentials = run_flow(flow, storage, arg)
+
 	return build(API_SERVICE, API_VERSION,
 		http=credentials.authorize(httplib2.Http()))
 
 def _add_subscription(CHANNEL_ID):
 	try:
 		add_subscription_response = youapi.subscriptions().insert(part='snippet',body=dict(snippet=dict(resourceId=dict(channelId=CHANNEL_ID, kind="youtube#channel")))).execute()
-		sleep(90)
+		sleep(60)
 	except HttpError as err_description:
 		err_subject = CHANNEL_ID + " : _add_subscription_HttpError"
 		_log(err_subject, err_description)
-		sleep(60 * 60 * 3)
+		if "TOO many" in err_description:
+			sleep(60 * 60 * 3)
 		_add_subscription(youapi, CHANNEL_ID)
 	except Exception as err_description:
 		err_subject = CHANNEL_ID + " : _add_subscription"
@@ -87,6 +82,7 @@ def _youtube_init(URL):
 	CHANNEL_ID = _channel_split(URL)
 	if CHANNEL_ID is not None:
 		_add_subscription(CHANNEL_ID)
+	return CHANNEL_ID
 
 def _youtube_info(CHANNEL_ID):
 	token = ""
@@ -94,19 +90,18 @@ def _youtube_info(CHANNEL_ID):
 	try:
 		channel_check = youapi.channels().list(part="snippet,statistics",id=CHANNEL_ID).execute()
 	except Exception as e:
-		err_subject = CHANNEL_ID + " : _channel_check"
+		err_subject = CHANNEL_ID + " : _youtube_info"
 		_log(err_subject, e)
 		return "",videos,""
 	subscript = channel_check["items"][0]["statistics"]["subscriberCount"]
 	title = channel_check["items"][0]["snippet"]["title"]
+	
 	for l in range(100):
 		try:
 			video_ids = youapi.search().list(part="id", channelId=CHANNEL_ID, maxResults="50", order="date", pageToken=token).execute()
-			sleep(10)
 			for i in video_ids["items"]:
 				if "videoId" in i["id"]:
 					video_info = youapi.videos().list(part="id,snippet,statistics", id=i["id"]["videoId"]).execute()["items"][0]
-					sleep(3)
 					videos.append({"id":i["id"]["videoId"], "title":video_info["snippet"]["title"], "view":video_info["statistics"]["viewCount"], "day":""})
 			token = video_ids["nextPageToken"]
 		except Exception as e:
@@ -118,6 +113,7 @@ def _youtube_info(CHANNEL_ID):
 
 
 ### 認証 ###
+
 def tweepy_api():
 	twitter_conf = {
 		'consumer' : {
@@ -332,8 +328,7 @@ def _profile_get_capture_banner(screen_name, file_path_cap):
 
 def _profile(SCREEN_NAME, USER_OBJECT):
 	file_path = download_directory
-	#file_path_cap = "<capture閲覧用>"
-	file_path_cap = "/var/www/html/capture/"
+	file_path_cap = "<FILLIN_capture閲覧用>"
 	prof_flag = "0"
 
 	if hasattr(USER_OBJECT, "profile_image_url_https"):
@@ -356,7 +351,6 @@ def _profile(SCREEN_NAME, USER_OBJECT):
 			shutil.copyfile(comparison_icon_file, file_path_cap + profile_object_name + "_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1])
 			shutil.copyfile(comparison_icon_file, base_icon_file)
 			_profile_get_capture_icon(profile_object_name, file_path_cap)
-			#api.update_with_media(filename=capture_file)
 			prof_flag = "1"
 		os.remove(comparison_icon_file)
 	if hasattr(USER_OBJECT, "profile_banner_url"):
@@ -373,13 +367,12 @@ def _profile(SCREEN_NAME, USER_OBJECT):
 			shutil.copyfile(comparison_banner_file, file_path_cap + profile_object_name + "_banner_" + DATE + ".jpg")
 			shutil.copyfile(comparison_banner_file, base_banner_file)
 			_profile_get_capture_banner(profile_object_name, file_path_cap)
-			#api.update_with_media(filename=capture_file)
 			prof_flag = "1"
 		os.remove(comparison_banner_file)
-	
+
 	if prof_flag != "0":
 		twi_str = '変わったかも_{0:%H:%M}'.format(datetime.datetime.now())
-		twiapi.update_status(twi_str)
+		#twiapi.update_status(twi_str)
 
 
 
@@ -388,13 +381,13 @@ def _profile(SCREEN_NAME, USER_OBJECT):
 def _search(FILEPATH, QUERY, GET_DATE, TWEET_ID, gif_enable, video_enable):
 	search_fault_count = 0
 	tmp_id = ""
-	
+
 	def _id_search(QUERY, TWEET_ID):
 		nonlocal search_fault_count
 		try:
 			if TWEET_ID:
 				search_result = twiapi.search(q=QUERY, since_id=TWEET_ID)
-			if search_result = "":
+			if search_result == "":
 				search_result = twiapi.search(q=QUERY, count=1)
 		except tweepy.RateLimitError as err_description:
 			err_subject = str(QUERY) + " : RateLimitError_id_search"
@@ -409,7 +402,7 @@ def _search(FILEPATH, QUERY, GET_DATE, TWEET_ID, gif_enable, video_enable):
 				sleep(10)
 				_id_search(QUERY, TWEET_ID)
 		return search_result
-		
+
 	def _search_start(QUERY, search_flag, FILEPATH, gif_enable, video_enable):
 		nonlocal search_fault_count
 		nonlocal tmp_id
@@ -438,10 +431,10 @@ def _search(FILEPATH, QUERY, GET_DATE, TWEET_ID, gif_enable, video_enable):
 				_log(err_subject, err_description)
 				sleep(10)
 				_search_start(QUERY, search_flag, FILEPATH, gif_enable, video_enable)
-	
+
 	while_count = 0
 	search_date_tmp = _id_search(QUERY, TWEET_ID)
-	if search_date_tmp = "":
+	if search_date_tmp == "":
 		err_description = ""
 		err_subject = str(QUERY) + " : search result None"
 		_log(err_subject, err_description)
@@ -617,9 +610,6 @@ def _show():
 ### init ###
 
 def init_start():
-	#if os.path.exists(download_directory) == False:
-	#	print("directory is not found.")
-	#	sys.exit()
 	if os.path.exists(DB_file) == False:
 		print("json-file is not found.")
 		q = input("Do you want to create a file?(y/n)")
@@ -688,27 +678,27 @@ def _parser():
 
 if __name__ == '__main__':
 	cmd_args = _parser()
-	
+
 	if os.path.dirname(cmd_args.json_file[0]):
 		working_directory = os.path.dirname(cmd_args.json_file[0]) + "/"
 	else:
 		working_directory = os.getcwd() +"/"
 	#if not os.path.exists(working_directory + "download"):
-	#	os.makedirs(working_directory + "download")
+	#       os.makedirs(working_directory + "download")
 	#download_directory = working_directory + "download/"
 	DB_file = working_directory + os.path.basename(cmd_args.json_file[0])
 	DATE = datetime.datetime.today().strftime("%Y%m%d_%H%M_%S")
 	LOGFILE = working_directory + DATE + "_log.txt"
-	
+
 	CLIENT_SECRET_FILE = working_directory + "youtube_client_secrets.json"
 	SCOPE = "https://www.googleapis.com/auth/youtube"
 	API_SERVICE = "youtube"
 	APPLICATION_NAME = "youbotpro"
 	API_VERSION = "v3"
-	
+
 	if not os.path.exists(DB_file):
 		init_start()
-	
+
 	json_dict = []
 	try:
 		f = open(DB_file,'r')
@@ -718,15 +708,11 @@ if __name__ == '__main__':
 		print("get backupfile : " + DB_file + "_bak")
 	except Exception as e:
 		if os.path.getsize(DB_file) != 0:
-			print(e)
+			err_subject = "JSON file load"
+			_log(err_subject, e)
 			sys.exit()
-	
+
 	twiapi = tweepy_api()
-	try:
-		flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-		sleep(30)
-	except ImportError:
-		flags = None
 	youapi = _get_authenticated_service(working_directory + "youtube_quickstart.json")
 
 	if cmd_args.addf or cmd_args.addo or cmd_args.addq is not None or cmd_args.show:
@@ -743,13 +729,15 @@ if __name__ == '__main__':
 				USER_OBJECT = _twitter_userobject_get(tmp_id)
 				SCREEN_NAME = USER_OBJECT.screen_name
 				urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
+				channels = []
 				for u in urls:
-					channel = _youtube_init(u)
-				#for id in CHANNEL_ID:
-				if channel:
-					subscript,videos,title = _youtube_info(channel)
-				else:
-					subscript = videos = title = ""
+					init_res = _youtube_init(u)
+					if init_res is not None:
+						channels.append({"channel":init_res})
+				if channels:
+					for index,channel in enumerate(channels):
+						subscript,videos,title = _youtube_info(channel["channel"])
+						channels[index].update(title=title, subscript=subscript, videos=videos)
 				if not SCREEN_NAME in json_dict:
 					if os.path.exists(working_directory + SCREEN_NAME) == False:
 						os.makedirs(working_directory + SCREEN_NAME)
@@ -766,15 +754,10 @@ if __name__ == '__main__':
 							"TLflag":add_tl,
 							"RTflag":cmd_args.rt,
 							"videoflag":cmd_args.video,
-							"gifflag":cmd_args.gif
+							"gifflag":cmd_args.gif,
 							"urls":urls
 						},
-						"youtube":{
-							"title":title,
-							"channel":channel, 
-							"subscript":subscript,
-							"videos":videos
-						}
+						"youtube":channels
 					})
 		if cmd_args.addo:
 			if not cmd_args.name:
@@ -808,18 +791,18 @@ if __name__ == '__main__':
 		VIDEO_FLAG = USER_JSON["twitter"]["videoflag"]
 		FOLLOWER = USER_OBJECT.followers_count
 		HASHTAG_CSV = []
-		
+
 		# Profile
 		if USER_JSON["twitter"]["Profileflag"] == True:
 			_profile(SCREEN_NAME, USER_OBJECT)
 		HASHTAG_CSV.extend(_twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT))
 		urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
 		json_dict[index]["twitter"]["urls"].append(urls)
-		
+
 		#for u in USER_JSON["twitter"]["urls"]:
-		#	channel,subscript = _youtube_api(u)
-		#	json_dict[index]["youtube"].append({"channel":channel, "subscript":subscript, "videos":{}})
-		
+		#       channel,subscript = _youtube_api(u)
+		#       json_dict[index]["youtube"].append({"channel":channel, "subscript":subscript, "videos":{}})
+
 		# TL Search
 		if USER_JSON["twitter"]["TLflag"] != False:
 			TWEET_ID = USER_JSON["twitter"]["TLflag"]["id"]
@@ -833,13 +816,11 @@ if __name__ == '__main__':
 				for l in range(50):
 					search_fault_count = 0
 					_search(FILEPATH, QUERY, GET_DATE, TWEET_ID, GIF_FLAG, VIDEO_FLAG)
-		
-		
+
+
 		# tags
 		with open(working_directory + DATE + "_" + SCREEN_NAME + "_tags.csv", "w") as f:
 			w = csv.writer(f, lineterminator='\n')
 			w.writerow(HASHTAG_CSV)
-		
+
 		_edit_json()
-
-
