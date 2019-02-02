@@ -84,24 +84,19 @@ def _channel_split(URL):
 	return CHANNEL_ID
 
 def _youtube_init(URL):
-	try:
-		CHANNEL_ID = _channel_split(URL)
-		if CHANNEL_ID is not None:
-			_add_subscription(CHANNEL_ID)
-	except Exception as e:
-		err_subject = URL
-		_log(err_subject, e)
-		sleep(180)
-		_apicool(URL)
+	CHANNEL_ID = _channel_split(URL)
+	if CHANNEL_ID is not None:
+		_add_subscription(CHANNEL_ID)
 
 def _youtube_info(CHANNEL_ID):
 	token = ""
+	videos = []
 	try:
 		channel_check = youapi.channels().list(part="snippet,statistics",id=CHANNEL_ID).execute()
 	except Exception as e:
-		err_subject = CHANNEL_ID
+		err_subject = CHANNEL_ID + " : _channel_check"
 		_log(err_subject, e)
-		return "","",""
+		return "",videos,""
 	subscript = channel_check["items"][0]["statistics"]["subscriberCount"]
 	title = channel_check["items"][0]["snippet"]["title"]
 	for l in range(100):
@@ -115,7 +110,7 @@ def _youtube_info(CHANNEL_ID):
 					videos.append({"id":i["id"]["videoId"], "title":video_info["snippet"]["title"], "view":video_info["statistics"]["viewCount"], "day":""})
 			token = video_ids["nextPageToken"]
 		except Exception as e:
-			err_subject = CHANNEL_ID
+			err_subject = CHANNEL_ID + " : _video_get"
 			_log(err_subject, e)
 			break
 	return subscript,videos,title
