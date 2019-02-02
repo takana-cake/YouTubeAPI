@@ -11,6 +11,7 @@ https://github.com/takana303/Tweepy-script</br>
 
 
 ## 残タスク
+youtube apiのsecretファイル作成をinitに追加<br>
 オブジェクトの名前と所属を更新<br>
 ハッシュタグをQueryへ追加<br>
 jsonをブラウザで閲覧<br>
