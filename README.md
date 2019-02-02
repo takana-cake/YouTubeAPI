@@ -43,6 +43,22 @@ json_dict = [
 </pre>
 
 
+## ファイルツリー
+<pre>
+cwd
+├ user01
+│ ├ download
+│ │ ├ media
+│ │ └ ...
+│ └ yyyymmdd_tag.csv
+├ user02
+├ ...
+├ main.py
+├ db.json
+└ yyyymmdd_log
+</pre>
+
+
 ## 参考サイト
 
 YouTube Data API</br>
