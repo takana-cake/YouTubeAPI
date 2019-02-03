@@ -618,7 +618,11 @@ def init_start():
 		else:
 			print("Please select json-file.")
 			sys.exit()
+	if os.path.exists(working_directory + "youtube_quickstart.json") == False:
+		print("init Youtube API.")
+		youapi = _get_authenticated_service(working_directory + "youtube_quickstart.json")
 	print("init done.\n")
+	sys.exit()
 
 
 
