@@ -823,7 +823,7 @@ if __name__ == '__main__':
 
 
 		# tags
-		with open(working_directory + DATE + "_" + SCREEN_NAME + "_tags.csv", "w") as f:
+		with open(working_directory + SCREEN_NAME + "/" + DATE + "_" + SCREEN_NAME + "_tags.csv", "w") as f:
 			w = csv.writer(f, lineterminator='\n')
 			w.writerow(HASHTAG_CSV)
 
