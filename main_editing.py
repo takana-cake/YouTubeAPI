@@ -42,9 +42,11 @@ def _get_authenticated_service(JSON_FILE):
 
 	if credentials is None or credentials.invalid:
 		youtube_parser = argparse.ArgumentParser()
-		youtube_parser.add_argument("--noauth_local_webserver", action='store_true')
-		arg = youtube_parser.parse_args()
-		credentials = run_flow(flow, storage, arg)
+		youtube_parser.add_argument('--auth_host_name', default='localhost')
+		youtube_parser.add_argument("--noauth_local_webserver", default=True, action='store_true')
+		youtube_parser.add_argument('--logging_level', default='ERROR')
+		youtube_parser.add_argument('--auth_host_port', default=[8080, 8090], nargs='*')
+		arg, unknown = youtube_parser.parse_known_args()
 
 	return build(API_SERVICE, API_VERSION,
 		http=credentials.authorize(httplib2.Http()))
@@ -56,14 +58,13 @@ def _add_subscription(CHANNEL_ID):
 	except HttpError as err_description:
 		err_subject = CHANNEL_ID + " : _add_subscription_HttpError"
 		_log(err_subject, err_description)
-		if "TOO many" in err_description:
-			sleep(60 * 60 * 3)
-		_add_subscription(youapi, CHANNEL_ID)
+		sleep(60 * 60 * 3)
+		_add_subscription(CHANNEL_ID)
 	except Exception as err_description:
 		err_subject = CHANNEL_ID + " : _add_subscription"
 		_log(err_subject, err_description)
 		sleep(180)
-		_add_subscription(youapi, CHANNEL_ID)
+		_add_subscription(CHANNEL_ID)
 
 def _channel_split(URL):
 	if "/channel/" in URL:
@@ -324,9 +325,11 @@ def _profile_get_capture_banner(screen_name, file_path_cap):
 	cmd_capture_banner = "wkhtmltoimage --crop-h 380 --crop-w 1023 --crop-x 1 --crop-y 40 " + url_user + " " + capture_banner_file
 	subprocess.call(cmd_capture_banner.split(), shell=False)
 
-def _profile(SCREEN_NAME, USER_OBJECT):
-	file_path = download_directory
-	file_path_cap = "<FILLIN_capture閲覧用>"
+def _profile(SCREEN_NAME, USER_OBJECT, FILEPATH):
+	file_path = FILEPATH
+	file_path_cap = FILEPATH + "_profile/"
+	if os.path.exists(file_path_cap) == False:
+		os.makedirs(file_path_cap)
 	prof_flag = "0"
 
 	if hasattr(USER_OBJECT, "profile_image_url_https"):
@@ -337,34 +340,34 @@ def _profile(SCREEN_NAME, USER_OBJECT):
 			profile_icon = profile_icon.replace("_mini", "")
 		elif '_bigger' in profile_icon:
 			profile_icon = profile_icon.replace("_bigger", "")
-		comparison_icon_file = file_path + profile_object_name + "_comparison_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1]
+		comparison_icon_file = file_path + SCREEN_NAME + "_comparison_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1]
 		_profile_get_img(profile_icon, comparison_icon_file)
-		if not glob.glob(file_path + profile_object_name + '_base_icon*'):
-			base_icon_file = file_path + profile_object_name + "_base_icon." + profile_icon.rsplit(".", 1)[1]
+		if not glob.glob(file_path + SCREEN_NAME + '_base_icon*'):
+			base_icon_file = file_path + SCREEN_NAME + "_base_icon." + profile_icon.rsplit(".", 1)[1]
 			shutil.copyfile(comparison_icon_file, base_icon_file)
-			shutil.copyfile(comparison_icon_file, file_path_cap + profile_object_name + "_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1])
-			_profile_get_capture_icon(profile_object_name, file_path_cap)
-		base_icon_file = glob.glob(file_path + profile_object_name + '_base_icon*')[0]
+			shutil.copyfile(comparison_icon_file, file_path_cap + SCREEN_NAME + "_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1])
+			_profile_get_capture_icon(SCREEN_NAME, file_path_cap)
+		base_icon_file = glob.glob(file_path + SCREEN_NAME + '_base_icon*')[0]
 		if filecmp.cmp(base_icon_file, comparison_icon_file) == False :
-			shutil.copyfile(comparison_icon_file, file_path_cap + profile_object_name + "_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1])
+			shutil.copyfile(comparison_icon_file, file_path_cap + SCREEN_NAME + "_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1])
 			shutil.copyfile(comparison_icon_file, base_icon_file)
-			_profile_get_capture_icon(profile_object_name, file_path_cap)
+			_profile_get_capture_icon(SCREEN_NAME, file_path_cap)
 			prof_flag = "1"
 		os.remove(comparison_icon_file)
 	if hasattr(USER_OBJECT, "profile_banner_url"):
 		profile_banner = USER_OBJECT.profile_banner_url
-		comparison_banner_file = file_path + profile_object_name + "_comparison_banner_" + DATE + ".jpg"
+		comparison_banner_file = file_path + SCREEN_NAME + "_comparison_banner_" + DATE + ".jpg"
 		_profile_get_img(profile_banner, comparison_banner_file)
-		if not glob.glob(file_path + profile_object_name + '_base_banner*'):
-			base_banner_file = file_path + profile_object_name + "_base_banner.jpg"
+		if not glob.glob(file_path + SCREEN_NAME + '_base_banner*'):
+			base_banner_file = file_path + SCREEN_NAME + "_base_banner.jpg"
 			shutil.copyfile(comparison_banner_file, base_banner_file)
-			shutil.copyfile(comparison_banner_file, file_path_cap + profile_object_name + "_banner_" + DATE + ".jpg")
-			_profile_get_capture_banner(profile_object_name, file_path_cap)
-		base_banner_file = glob.glob(file_path + profile_object_name + '_base_banner*')[0]
+			shutil.copyfile(comparison_banner_file, file_path_cap + SCREEN_NAME + "_banner_" + DATE + ".jpg")
+			_profile_get_capture_banner(SCREEN_NAME, file_path_cap)
+		base_banner_file = glob.glob(file_path + SCREEN_NAME + '_base_banner*')[0]
 		if filecmp.cmp(base_banner_file, comparison_banner_file) == False:
-			shutil.copyfile(comparison_banner_file, file_path_cap + profile_object_name + "_banner_" + DATE + ".jpg")
+			shutil.copyfile(comparison_banner_file, file_path_cap + SCREEN_NAME + "_banner_" + DATE + ".jpg")
 			shutil.copyfile(comparison_banner_file, base_banner_file)
-			_profile_get_capture_banner(profile_object_name, file_path_cap)
+			_profile_get_capture_banner(SCREEN_NAME, file_path_cap)
 			prof_flag = "1"
 		os.remove(comparison_banner_file)
 
@@ -813,8 +816,8 @@ if __name__ == '__main__':
 			HASHTAG_CSV.extend(HASHTAG_LIST)
 
 		# Query Search
-		if not USER_JSON['Query'] == {}:
-			for QUERY,search_date in user_object['Query'].items():
+		if not USER_JSON["twitter"]['Query'] == {}:
+			for QUERY,search_date in USER_JSON["twitter"]['Query'].items():
 				for l in range(50):
 					search_fault_count = 0
 					_search(FILEPATH, QUERY, GET_DATE, TWEET_ID, GIF_FLAG, VIDEO_FLAG)
