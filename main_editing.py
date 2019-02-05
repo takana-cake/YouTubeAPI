@@ -252,7 +252,7 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 				_log(err_subject, err_description)
 				sleep(60)
 				_get_tweetid(SCREEN_NAME)
-	def _TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag):
+	def _TL_tweet_get(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, video_enable, search_flag):
 		nonlocal TL_tweet_get_fault_count
 		nonlocal HASHTAG_LIST
 		try:
@@ -272,14 +272,14 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 			err_subject = str(SCREEN_NAME) + " : RateLimitError_tweet_get : " + str(TWEET_ID)
 			_log(err_subject, err_description)
 			sleep(60 * 15)
-			_TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag)
+			_TL_tweet_get(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, video_enable, search_flag)
 		except Exception as err_description:
 			if TL_tweet_get_fault_count < 2:
 				err_subject = str(SCREEN_NAME) + " : Exception_tweet_get : " + str(TWEET_ID)
 				_log(err_subject, err_description)
 				TL_tweet_get_fault_count = TL_tweet_get_fault_count +1
 				sleep(60 * 5)
-				_TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag)
+				_TL_tweet_get(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, video_enable, search_flag)
 	if TWEET_ID == "":
 		TL_search_fault_count = 0
 		TWEET_ID = _get_tweetid(SCREEN_NAME)
@@ -289,9 +289,9 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 	if not TWEET_ID == None:
 		TL_tweet_get_fault_count = 0
 		while_count = 0
-		while while_count < 50:
+		while while_count < 100:
 			while_count += 1
-			_TL_tweet_get(SCREEN_NAME, TWEET_ID, search_flag)
+			_TL_tweet_get(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, video_enable, search_flag)
 	return TWEET_ID,HASHTAG_LIST
 
 
@@ -326,8 +326,7 @@ def _profile_get_capture_banner(screen_name, file_path_cap):
 	subprocess.call(cmd_capture_banner.split(), shell=False)
 
 def _profile(SCREEN_NAME, USER_OBJECT, FILEPATH):
-	file_path = FILEPATH
-	file_path_cap = FILEPATH + "_profile/"
+	file_path_cap = FILEPATH + "profile/"
 	if os.path.exists(file_path_cap) == False:
 		os.makedirs(file_path_cap)
 	prof_flag = "0"
@@ -340,14 +339,14 @@ def _profile(SCREEN_NAME, USER_OBJECT, FILEPATH):
 			profile_icon = profile_icon.replace("_mini", "")
 		elif '_bigger' in profile_icon:
 			profile_icon = profile_icon.replace("_bigger", "")
-		comparison_icon_file = file_path + SCREEN_NAME + "_comparison_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1]
+		comparison_icon_file = file_path_cap + SCREEN_NAME + "_comparison_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1]
 		_profile_get_img(profile_icon, comparison_icon_file)
-		if not glob.glob(file_path + SCREEN_NAME + '_base_icon*'):
-			base_icon_file = file_path + SCREEN_NAME + "_base_icon." + profile_icon.rsplit(".", 1)[1]
+		if not glob.glob(file_path_cap + SCREEN_NAME + '_base_icon*'):
+			base_icon_file = file_path_cap + SCREEN_NAME + "_base_icon." + profile_icon.rsplit(".", 1)[1]
 			shutil.copyfile(comparison_icon_file, base_icon_file)
 			shutil.copyfile(comparison_icon_file, file_path_cap + SCREEN_NAME + "_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1])
 			_profile_get_capture_icon(SCREEN_NAME, file_path_cap)
-		base_icon_file = glob.glob(file_path + SCREEN_NAME + '_base_icon*')[0]
+		base_icon_file = glob.glob(file_path_cap + SCREEN_NAME + '_base_icon*')[0]
 		if filecmp.cmp(base_icon_file, comparison_icon_file) == False :
 			shutil.copyfile(comparison_icon_file, file_path_cap + SCREEN_NAME + "_icon_" + DATE + "." + profile_icon.rsplit(".", 1)[1])
 			shutil.copyfile(comparison_icon_file, base_icon_file)
@@ -356,14 +355,14 @@ def _profile(SCREEN_NAME, USER_OBJECT, FILEPATH):
 		os.remove(comparison_icon_file)
 	if hasattr(USER_OBJECT, "profile_banner_url"):
 		profile_banner = USER_OBJECT.profile_banner_url
-		comparison_banner_file = file_path + SCREEN_NAME + "_comparison_banner_" + DATE + ".jpg"
+		comparison_banner_file = file_path_cap + SCREEN_NAME + "_comparison_banner_" + DATE + ".jpg"
 		_profile_get_img(profile_banner, comparison_banner_file)
-		if not glob.glob(file_path + SCREEN_NAME + '_base_banner*'):
-			base_banner_file = file_path + SCREEN_NAME + "_base_banner.jpg"
+		if not glob.glob(file_path_cap + SCREEN_NAME + '_base_banner*'):
+			base_banner_file = file_path_cap + SCREEN_NAME + "_base_banner.jpg"
 			shutil.copyfile(comparison_banner_file, base_banner_file)
 			shutil.copyfile(comparison_banner_file, file_path_cap + SCREEN_NAME + "_banner_" + DATE + ".jpg")
 			_profile_get_capture_banner(SCREEN_NAME, file_path_cap)
-		base_banner_file = glob.glob(file_path + SCREEN_NAME + '_base_banner*')[0]
+		base_banner_file = glob.glob(file_path_cap + SCREEN_NAME + '_base_banner*')[0]
 		if filecmp.cmp(base_banner_file, comparison_banner_file) == False:
 			shutil.copyfile(comparison_banner_file, file_path_cap + SCREEN_NAME + "_banner_" + DATE + ".jpg")
 			shutil.copyfile(comparison_banner_file, base_banner_file)
@@ -493,7 +492,7 @@ def _download_media(DL_URL, FILEPATH, FILENAME):
 				err_subject = "Exception_download : " + DL_URL
 				_log(err_subject, err_description)
 				sleep(60)
-				_download_file(type, gif_enable)
+				_download_file(DL_URL, FILEPATH, FILENAME)
 			else:
 				errcount = 0
 		if FILENAME[-3:] == 'gif':
