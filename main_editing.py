@@ -316,13 +316,13 @@ def _profile_get_img(url, file_name):
 def _profile_get_capture_icon(screen_name, file_path_cap):
 	url_user = "https://twitter.com/" + screen_name
 	capture_icon_file = file_path_cap + screen_name + "_capture_icon_" + DATE + ".jpg"
-	cmd_capture_icon = "wkhtmltoimage --crop-h 255 --crop-w 255 --crop-x 50 --crop-y 185 " + url_user + " " + capture_icon_file
+	cmd_capture_icon = "wkhtmltoimage --javascript-delay 15000 --crop-h 255 --crop-w 255 --crop-x 50 --crop-y 185 " + url_user + " " + capture_icon_file
 	subprocess.call(cmd_capture_icon.split(), shell=False)
 
 def _profile_get_capture_banner(screen_name, file_path_cap):
 	url_user = "https://twitter.com/" + screen_name
 	capture_banner_file = file_path_cap + screen_name + "_capture_banner_" + DATE + ".jpg"
-	cmd_capture_banner = "wkhtmltoimage --crop-h 380 --crop-w 1023 --crop-x 1 --crop-y 40 " + url_user + " " + capture_banner_file
+	cmd_capture_banner = "wkhtmltoimage --javascript-delay 15000 --crop-h 380 --crop-w 1023 --crop-x 1 --crop-y 40 " + url_user + " " + capture_banner_file
 	subprocess.call(cmd_capture_banner.split(), shell=False)
 
 def _profile(SCREEN_NAME, USER_OBJECT, FILEPATH):
