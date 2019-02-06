@@ -530,7 +530,6 @@ def _download_check(FILEPATH, dl_object, retweet_enable, gif_enable, video_enabl
 						FILENAME = os.path.basename(DL_URL)
 						FILE_CHECK = FILENAME
 					if os.path.exists(FILEPATH + FILE_CHECK) == False:
-						#_download_file(DL_URL, FILEPATH, FILENAME)
 						_download_media(DL_URL, FILEPATH, FILENAME)
 
 
