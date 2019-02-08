@@ -16,7 +16,7 @@ TLを収集(favは未実装)</br>
 youtube apiのsecretファイル作成をinitに追加<br>
 オブジェクトの名前と所属を更新<br>
 ハッシュタグをQueryへ追加<br>
-jsonをブラウザで閲覧<br>
+jsonをブラウザで閲覧＆編集<br>
 
 
 ## 必要なパッケージ
@@ -82,6 +82,12 @@ json_dict = [
 </pre>
 
 
+## php
+|||
+|||
+|||
+
+
 ## ファイルツリー
 <pre>
 cwd
@@ -96,6 +102,7 @@ cwd
 ├ db.json
 ├ youtube_client_secrets.json
 ├ youtube_quickstart.json
+├ index.php
 └ yyyymmdd_log.txt
 </pre>
 
