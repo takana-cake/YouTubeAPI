@@ -43,7 +43,7 @@ def _get_authenticated_service(JSON_FILE):
 	if credentials is None or credentials.invalid:
 		youtube_parser = argparse.ArgumentParser()
 		youtube_parser.add_argument('--auth_host_name', default='localhost')
-		youtube_parser.add_argument("--noauth_local_webserver", default=True, action='store_true')
+		youtube_parser.add_argument("--noauth_local_webserver", default=True)
 		youtube_parser.add_argument('--logging_level', default='ERROR')
 		youtube_parser.add_argument('--auth_host_port', default=[8080, 8090], nargs='*')
 		arg, unknown = youtube_parser.parse_known_args()
