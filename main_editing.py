@@ -151,12 +151,13 @@ def _twitter_userobject_get(SCREEN_NAME):
 			sleep(60 * 15)
 			_get_description(SCREEN_NAME)
 		except Exception as err:
-			if errcount < 2:
+			if errcount < 3:
 				errcount = errcount + 1
 				err_subject = SCREEN_NAME + " : _twitter_userobject_get"
 				_log(err_subject, err)
 				sleep(60)
 				_get_description(SCREEN_NAME)
+			return "err"
 	_get_description(SCREEN_NAME)
 	return USER_OBJECT
 
@@ -246,7 +247,7 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 			sleep(60 * 15)
 			_get_tweetid(SCREEN_NAME)
 		except Exception as err_description:
-			if TL_search_fault_count < 2:
+			if TL_search_fault_count < 3:
 				TL_search_fault_count = TL_search_fault_count + 1
 				err_subject = SCREEN_NAME + " : Exception_TL_search"
 				_log(err_subject, err_description)
@@ -274,7 +275,7 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 			sleep(60 * 15)
 			_TL_tweet_get(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, video_enable, search_flag)
 		except Exception as err_description:
-			if TL_tweet_get_fault_count < 2:
+			if TL_tweet_get_fault_count < 3:
 				err_subject = str(SCREEN_NAME) + " : Exception_tweet_get : " + str(TWEET_ID)
 				_log(err_subject, err_description)
 				TL_tweet_get_fault_count = TL_tweet_get_fault_count +1
@@ -305,7 +306,7 @@ def _profile_get_img(url, file_name):
 		try:
 			urllib.request.urlretrieve(url, file_name)
 		except Exception as err_description:
-			if profile_get_img_fault_count < 2:
+			if profile_get_img_fault_count < 3:
 				profile_get_img_fault_count = profile_get_img_fault_count + 1
 				err_subject = url + " : _profile_get_img"
 				_log(err_subject, err_description)
@@ -487,7 +488,7 @@ def _download_media(DL_URL, FILEPATH, FILENAME):
 				dl_file = urllib.request.urlopen(DL_URL).read()
 				f.write(dl_file)
 		except Exception as err_description:
-			if errcount < 2:
+			if errcount < 3:
 				errcount = errcount +1
 				err_subject = "Exception_download : " + DL_URL
 				_log(err_subject, err_description)
@@ -581,7 +582,7 @@ def _follow_userid_get(SCREEN_NAME):
 			sleep(60 * 15)
 			_follow_user_list(SCREEN_NAME)
 		except Exception as err_description:
-			if follow_user_list_fault_count < 2:
+			if follow_user_list_fault_count < 3:
 				follow_user_list_fault_count = follow_user_list_fault_count + 1
 				err_subject = "Exception_follow_userid_get"
 				_log(err_subject, err_description)
@@ -730,6 +731,8 @@ if __name__ == '__main__':
 			my_friends_ids = _follow_userid_get(cmd_args.name[0])
 			for tmp_id in my_friends_ids:
 				USER_OBJECT = _twitter_userobject_get(tmp_id)
+				if USER_OBJECT is "err":
+					continue
 				SCREEN_NAME = USER_OBJECT.screen_name
 				urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
 				channels = []
@@ -788,7 +791,11 @@ if __name__ == '__main__':
 	for index,USER_JSON in enumerate(json_dict):
 		SCREEN_NAME = USER_JSON["twitter"]["screen"]
 		FILEPATH = working_directory + SCREEN_NAME + "/download/"
+		
 		USER_OBJECT = _twitter_userobject_get(SCREEN_NAME)
+		if USER_OBJECT is "err":
+			continue
+		
 		RT_FLAG = USER_JSON["twitter"]["RTflag"]
 		GIF_FLAG = USER_JSON["twitter"]["gifflag"]
 		VIDEO_FLAG = USER_JSON["twitter"]["videoflag"]
@@ -801,10 +808,6 @@ if __name__ == '__main__':
 		HASHTAG_CSV.extend(_twitter_profile_hashtag(SCREEN_NAME, USER_OBJECT))
 		urls = _twiprofurl_get(SCREEN_NAME, USER_OBJECT)
 		json_dict[index]["twitter"]["urls"].append(urls)
-
-		#for u in USER_JSON["twitter"]["urls"]:
-		#       channel,subscript = _youtube_api(u)
-		#       json_dict[index]["youtube"].append({"channel":channel, "subscript":subscript, "videos":{}})
 
 		# TL Search
 		if USER_JSON["twitter"]["TLflag"] != False:
