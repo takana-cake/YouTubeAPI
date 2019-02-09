@@ -146,8 +146,6 @@ def _twitter_userobject_get(SCREEN_NAME):
 		try:
 			USER_OBJECT = twiapi.get_user(SCREEN_NAME)
 		except tweepy.RateLimitError as err_description:
-			err_subject = SCREEN_NAME + " : RateLimitError_twitter_userobject_get"
-			_log(err_subject, err_description)
 			sleep(60 * 15)
 			_get_description(SCREEN_NAME)
 		except Exception as err:
@@ -242,8 +240,6 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 			get_id = twiapi.user_timeline(SCREEN_NAME).max_id
 			return get_id
 		except tweepy.RateLimitError as err_description:
-			err_subject = SCREEN_NAME + " : RateLimitError_TL_search"
-			_log(err_subject, err_description)
 			sleep(60 * 15)
 			_get_tweetid(SCREEN_NAME)
 		except Exception as err_description:
@@ -270,8 +266,6 @@ def _TL_search(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, vide
 					TWEET_ID = tl_object.id
 					TL_tweet_get_fault_count = 0
 		except tweepy.RateLimitError as err_description:
-			err_subject = str(SCREEN_NAME) + " : RateLimitError_tweet_get : " + str(TWEET_ID)
-			_log(err_subject, err_description)
 			sleep(60 * 15)
 			_TL_tweet_get(SCREEN_NAME, TWEET_ID, FILEPATH, retweet_enable, gif_enable, video_enable, search_flag)
 		except Exception as err_description:
@@ -391,8 +385,6 @@ def _search(FILEPATH, QUERY, GET_DATE, TWEET_ID, gif_enable, video_enable):
 			if search_result == "":
 				search_result = twiapi.search(q=QUERY, count=1)
 		except tweepy.RateLimitError as err_description:
-			err_subject = str(QUERY) + " : RateLimitError_id_search"
-			_log(err_subject, err_description)
 			sleep(60 * 15)
 			_id_search(QUERY, TWEET_ID)
 		except Exception as err_description:
@@ -421,8 +413,6 @@ def _search(FILEPATH, QUERY, GET_DATE, TWEET_ID, gif_enable, video_enable):
 						tmp_id = search_object.id
 						search_fault_count = 0
 		except tweepy.RateLimitError as err_description:
-			err_subject = str(QUERY) + " : RateLimitError_search_start"
-			_log(err_subject, err_description)
 			sleep(60 * 15)
 			_search_start(QUERY, search_flag, FILEPATH, gif_enable, video_enable)
 		except Exception as err_description:
@@ -577,8 +567,6 @@ def _follow_userid_get(SCREEN_NAME):
 				my_friends_list.append(tmp_id)
 				follow_user_list_fault_count = 0
 		except tweepy.RateLimitError as err_description:
-			err_subject = "RateLimitError_follow_userid_get"
-			_log(err_subject, err_description)
 			sleep(60 * 15)
 			_follow_user_list(SCREEN_NAME)
 		except Exception as err_description:
