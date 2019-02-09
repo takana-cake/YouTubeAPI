@@ -830,3 +830,5 @@ if __name__ == '__main__':
 			w.writerow(HASHTAG_CSV)
 
 		_edit_json()
+
+_log("Done.", "")
