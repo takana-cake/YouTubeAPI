@@ -157,7 +157,7 @@ def _twitter_userobject_get(SCREEN_NAME):
 				_log(err_subject, err)
 				sleep(60)
 				_get_description(SCREEN_NAME)
-			return "err"
+			USER_OBJECT = "err"
 	_get_description(SCREEN_NAME)
 	return USER_OBJECT
 
