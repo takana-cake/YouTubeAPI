@@ -732,10 +732,10 @@ if __name__ == '__main__':
 					for index,channel in enumerate(channels):
 						subscript,videos,title = _youtube_info(channel["channel"])
 						channels[index].update(title=title, subscript=subscript, videos=videos)
+				if os.path.exists(working_directory + SCREEN_NAME) == False:
+					os.makedirs(working_directory + SCREEN_NAME)
+					os.makedirs(working_directory + SCREEN_NAME + "/download/")
 				if not SCREEN_NAME in json_dict:
-					if os.path.exists(working_directory + SCREEN_NAME) == False:
-						os.makedirs(working_directory + SCREEN_NAME)
-						os.makedirs(working_directory + SCREEN_NAME + "/download/")
 					json_dict.append({
 						"name":"",
 						"belong":"",
