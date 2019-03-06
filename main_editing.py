@@ -529,10 +529,10 @@ def _download_check(FILEPATH, dl_object, retweet_enable, gif_enable, video_enabl
 
 def _add_new_object():
 	for tmp_user in cmd_args.name:
+		if os.path.exists(working_directory + tmp_user) == False:
+			os.makedirs(working_directory + tmp_user)
+			os.makedirs(working_directory + tmp_user + "/download/")
 		if not tmp_user in json_dict:
-			if os.path.exists(working_directory + tmp_user) == False:
-				os.makedirs(working_directory + tmp_user)
-				os.makedirs(working_directory + tmp_user + "/download/")
 			json_dict.append({
 				"name":"",
 				"belong":"",
